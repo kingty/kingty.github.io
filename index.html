@@ -309,29 +309,17 @@
 
       
         
-          
-            <h2 id="Contex"><a href="#Contex" class="headerlink" title="Contex"></a>Contex</h2><ul>
+          <h2 id="Contex"><a href="#Contex" class="headerlink" title="Contex"></a>Contex</h2><ul>
 <li>linux Centos6.5,64位</li>
 <li>tmux 2.7</li>
 </ul>
-<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><h3 id="下载安装libevent"><a href="#下载安装libevent" class="headerlink" title="下载安装libevent"></a>下载安装libevent</h3><p>先安装libevent，在后面编译好tmux后会链接到这里来<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz</span><br><span class="line"></span><br><span class="line">tar zxvf libevent-2.0.21-stable.tar.gz</span><br><span class="line"></span><br><span class="line">cd libevent-2.0.21-stable</span><br><span class="line"></span><br><span class="line">./configure</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure></p>
-<h3 id="安装tmux"><a href="#安装tmux" class="headerlink" title="安装tmux"></a>安装tmux</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/tmux/tmux/releases/download/2.7/tmux-2.7.tar.gz</span><br><span class="line"></span><br><span class="line">tar zxvf tmux-2.7.tar.gz</span><br><span class="line"></span><br><span class="line">cd tmux-2.7</span><br><span class="line"></span><br><span class="line">./configure</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>在执<code>./configure</code>的时候可能遇到的问题</p>
-<ul>
-<li>configure: error: no acceptable C compiler found in $PATH<br>解决的办法是:</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc</span><br></pre></td></tr></table></figure>
-<ul>
-<li>configure: error: “curses not found”<br>这个问题解决办法是：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ncurses-devel</span><br></pre></td></tr></table></figure>
-<p>然后<code>make &amp;&amp; make install</code> 完成之后输入<code>tmux</code>检验是否安装成功，这时候可能会出现异常</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tmux: error while loading shared libraries: libevent-2.0.so.5: cannot open shared object file: No such file or directory</span><br></pre></td></tr></table></figure>
-<p>解决办法是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/local/lib/libevent-2.0.so.5 /usr/lib64/libevent-2.0.so.5`</span><br></pre></td></tr></table></figure>
-<p>在输入<code>tmux</code>应该就成功了。</p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/06/06/Centos-6-5-安装-tmux-最新版/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
