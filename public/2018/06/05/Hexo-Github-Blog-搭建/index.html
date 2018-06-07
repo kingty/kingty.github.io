@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next gemini use-motion" lang="en">
+<html class="theme-next pisces use-motion" lang="en">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="android," />
+  <meta name="keywords" content="其他," />
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="Android view  Activity">
-<meta name="keywords" content="android">
+<meta name="description" content="今天用Github Pages 和 Hexo 来搭建了一个静态的博客。好处就是不需要数据库也不需要服务器，完全交由Github托管就可以拥有自己的博客。下面我记录了一下我自己的搭建的过程。 Contex linux Cenos 6.5,64位 Hexo 3.7.1">
+<meta name="keywords" content="其他">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hexo&amp;Github Blog 搭建">
 <meta property="og:url" content="https://kingty.github.io/2018/06/05/Hexo-Github-Blog-搭建/index.html">
 <meta property="og:site_name" content="Kingty&#39;s Blog">
-<meta property="og:description" content="Android view  Activity">
+<meta property="og:description" content="今天用Github Pages 和 Hexo 来搭建了一个静态的博客。好处就是不需要数据库也不需要服务器，完全交由Github托管就可以拥有自己的博客。下面我记录了一下我自己的搭建的过程。 Contex linux Cenos 6.5,64位 Hexo 3.7.1">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-06-05T12:18:53.046Z">
+<meta property="og:updated_time" content="2018-06-07T06:02:51.532Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo&amp;Github Blog 搭建">
-<meta name="twitter:description" content="Android view  Activity">
+<meta name="twitter:description" content="今天用Github Pages 和 Hexo 来搭建了一个静态的博客。好处就是不需要数据库也不需要服务器，完全交由Github托管就可以拥有自己的博客。下面我记录了一下我自己的搭建的过程。 Contex linux Cenos 6.5,64位 Hexo 3.7.1">
 
 
 
@@ -98,7 +98,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Gemini',
+    scheme: 'Pisces',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -248,7 +248,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="kingty">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -310,10 +310,61 @@
       
 
       
-        <h1 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h1><ul>
-<li>view </li>
-<li>Activity</li>
+        <p>今天用<code>Github Pages</code> 和 <code>Hexo</code> 来搭建了一个静态的博客。好处就是不需要数据库也不需要服务器，完全交由<code>Github</code>托管就可以拥有自己的博客。下面我记录了一下我自己的搭建的过程。</p>
+<h1 id="Contex"><a href="#Contex" class="headerlink" title="Contex"></a>Contex</h1><ul>
+<li>linux Cenos 6.5,64位</li>
+<li>Hexo 3.7.1</li>
 </ul>
+<a id="more"></a>
+<h1 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h1><p>因为所有的内容都是<code>Github</code>托管的，所以你首先要有一个<code>Github</code>账号。然后在创建一个<code>Repository</code>,这个<code>Repository</code>必须要满足一个规则才能生成<code>Pages</code>.详细内容可以查阅官方文档 <a href="https://pages.github.com/" target="_blank" rel="noopener">Github Pages</a></p>
+<p>简单来说就是创建一个名字为 <code>username.github.io</code>的库，其中<code>username</code>为你自己的<code>Github</code>的用户名。</p>
+<p>创建成功之后，把项目clone到本地。我机器本身还没有<code>Git</code>所以我先安装<code>Git</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum info git</span><br><span class="line">yum install -y git</span><br></pre></td></tr></table></figure>
+<p>然后我还需要添加这台机器对github的ssh权限，这样才能访问github。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#生成key</span><br><span class="line">ssh-keygen -t rsa -C &quot;xxxx@gmail.com&quot;</span><br><span class="line"></span><br><span class="line">cd .ssh/</span><br><span class="line">cat id_rsa.pub </span><br><span class="line"># 得到这个key后把它添加进你的github key里面</span><br></pre></td></tr></table></figure>
+<p>完成之后我们把刚才创建的<code>Repository</code>拷贝到本地。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:username/username.github.io.git</span><br></pre></td></tr></table></figure>
+<p>拷贝下来之后，我们在里面写一个我们的首页,并提交到我们的<code>Repository</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cd kingty.github.io</span><br><span class="line"></span><br><span class="line">echo &quot;Hello World&quot; &gt; index.html</span><br><span class="line"></span><br><span class="line">git add --all</span><br><span class="line"></span><br><span class="line">git commit -m &quot;Initial commit&quot;</span><br><span class="line"></span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+<p>到这里，你到浏览器输入<code>username.github.io</code>应该就可以访问到你刚才的html页面。其实到这里就相当于你的博客已经搭建完成了。但是，我们自己去写静态页面肯定是一个繁重的工作。因此我们就有了下面要介绍使用的工具<code>Hexo</code></p>
+<h1 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><code>Hexo</code>是一个快速、简洁且高效的博客框架。<code>Hexo</code> 使用 <code>Markdown</code>（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。并且可以帮助我们直接部署到<code>github.io</code>也就是你上面创建的<code>Repository</code>上面ï¼这样我们就可以只需要写<code>Markdown</code>文件就完成了博客部署。</p>
+<p><code>Hexo</code>是有<code>node</code> 构造所以我需要先在机器上安装<code>node</code>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm</span><br><span class="line"></span><br><span class="line">rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-remi</span><br><span class="line"></span><br><span class="line">rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm</span><br><span class="line"></span><br><span class="line">rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-remi</span><br><span class="line"></span><br><span class="line">yum -y install nodejs npm --enablerepo=epel</span><br></pre></td></tr></table></figure>
+<p>安装好<code>node</code>之后我们就可以用<code>npm</code>安装<code>hexo</code>了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo</span><br></pre></td></tr></table></figure>
+<p>在安装<code>hexo</code>的时候可能会遇到问题：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">npm ERR! Error: CERT_UNTRUSTED</span><br><span class="line">npm ERR!    at SecurePair.&lt;anonymous&gt; (tls.js:1430:32)</span><br><span class="line">npm ERR!    at SecurePair.emit (events.js:92:17)</span><br><span class="line">npm ERR!    at SecurePair.maybeInitFinished (tls.js:1029:10)</span><br><span class="line">npm ERR!    at CleartextStream.read [as _read] (tls.js:521:13)</span><br><span class="line">npm ERR!    at CleartextStream.Readable.read (_stream_readable.js:341:10)</span><br><span class="line">npm ERR!    at EncryptedStream.write [as _write] (tls.js:418:25)</span><br><span class="line">npm ERR!    at doWrite (_stream_writable.js:226:10)</span><br><span class="line">npm ERR!    at writeOrBuffer (_stream_writable.js:216:5)</span><br><span class="line">npm ERR!    at EncryptedStream.Writable.write (_stream_writable.js:183:11)</span><br><span class="line">npm ERR!    at write (_stream_readable.js:602:24)</span><br><span class="line">npm ERR! If you need help, you may report this log at:</span><br><span class="line">npm ERR!    &lt;http://github.com/isaacs/npm/issues&gt;</span><br><span class="line">npm ERR! or email it to:</span><br><span class="line">npm ERR!    &lt;npm-@googlegroups.com&gt;</span><br><span class="line">npm ERR! System Linux 2.6.32-696.18.7.el6.x86_64</span><br><span class="line">npm ERR! command &quot;node&quot; &quot;/usr/bin/npm&quot; &quot;install&quot; &quot;-g&quot; &quot;hexo&quot;</span><br><span class="line">npm ERR! cwd /root/github/kingty.github.io</span><br><span class="line">npm ERR! node -v v0.10.48</span><br><span class="line">npm ERR! npm -v 1.3.6</span><br><span class="line">npm ERR! </span><br><span class="line">npm ERR! Additional logging details can be found in:</span><br><span class="line">npm ERR!    /root/github/kingty.github.io/npm-debug.log</span><br><span class="line">npm ERR! not ok code 0</span><br></pre></td></tr></table></figure>
+<p>这是因为npm用https导致的，解决办法是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config set strict-ssl false</span><br></pre></td></tr></table></figure>
+<p>然后应该就可以正常安装好了。完成之后我们需要初始化<code>Hexo</code>,<strong>首先你还是要在刚才的<code>username.github.io</code>这个目录下，你现在应该在master分支，这时候你需要创建另外一个分支<code>hexo</code></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b hexo</span><br></pre></td></tr></table></figure>
+<p>然后在这个分支上初始化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init</span><br></pre></td></tr></table></figure>
+<p>初始化的过程可能你会遇到问题如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/usr/lib/node_modules/hexo/node_modules/hexo-cli/lib/hexo.js:13</span><br><span class="line">class HexoNotFoundError extends Error &#123;&#125;</span><br><span class="line">^^^^^</span><br><span class="line">SyntaxError: Unexpected reserved word</span><br><span class="line">    at Module._compile (module.js:439:25)</span><br><span class="line">    at Object.Module._extensions..js (module.js:474:10)</span><br><span class="line">    at Module.load (module.js:356:32)</span><br><span class="line">    at Function.Module._load (module.js:312:12)</span><br><span class="line">    at Module.require (module.js:364:17)</span><br><span class="line">    at require (module.js:380:17)</span><br><span class="line">    at Object.&lt;anonymous&gt; (/usr/lib/node_modules/hexo/bin/hexo:5:1)</span><br><span class="line">    at Module._compile (module.js:456:26)</span><br><span class="line">    at Object.Module._extensions..js (module.js:474:10)</span><br><span class="line">    at Module.load (module.js:356:32)</span><br></pre></td></tr></table></figure>
+<p>原因是<code>node</code>的版本过低，需要update 一下<code>node</code>到最新版</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#安装更新的一个软件</span><br><span class="line">npm install n -g</span><br><span class="line"></span><br><span class="line">#更新到最新stable版本</span><br><span class="line">n stable</span><br><span class="line"></span><br><span class="line">#重新初始化</span><br><span class="line">hexo init</span><br></pre></td></tr></table></figure>
+<p>这个时候你可能还ä¼遇到问题如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">FATAL ~/github/kingty.github.io not empty, please run `hexo init` on an empty folder and then copy your files into it</span><br><span class="line">FATAL Something&apos;s wrong. Maybe you can find the solution here: http://hexo.io/docs/troubleshooting.html</span><br><span class="line">Error: target not empty</span><br><span class="line">    at Context.initConsole (/usr/lib/node_modules/hexo/node_modules/hexo-cli/lib/console/init.js:30:27)</span><br><span class="line">    at Context.tryCatcher (/usr/lib/node_modules/hexo/node_modules/bluebird/js/release/util.js:16:23)</span><br><span class="line">    at Context.&lt;anonymous&gt; (/usr/lib/node_modules/hexo/node_modules/bluebird/js/release/method.js:15:34)</span><br><span class="line">    at /usr/lib/node_modules/hexo/node_modules/hexo-cli/lib/context.js:44:9</span><br><span class="line">    at Promise._execute (/usr/lib/node_modules/hexo/node_modules/bluebird/js/release/debuggability.js:303:9)</span><br><span class="line">    at Promise._resolveFromExecutor (/usr/lib/node_modules/hexo/node_modules/bluebird/js/release/promise.js:483:18)</span><br><span class="line">    at new Promise (/usr/lib/node_modules/hexo/node_modules/bluebird/js/release/promise.js:79:10)</span><br><span class="line">    at Context.call (/usr/lib/node_modules/hexo/node_modules/hexo-cli/lib/context.js:40:10)</span><br><span class="line">    at /usr/lib/node_modules/hexo/node_modules/hexo-cli/lib/hexo.js:68:17</span><br><span class="line">    at tryCatcher (/usr/lib/node_modules/hexo/node_modules/bluebird/js/release/util.js:16:23)</span><br><span class="line">    at Promise._settlePromiseFromHandler (/usr/lib/node_modules/hexo/node_modules/bluebird/js/release/promise.js:512:31)</span><br><span class="line">    at Promise._settlePromise (/usr/lib/node_modules/hexo/node_modules/bluebird/js/release/promise.js:569:18)</span><br><span class="line">    at Promise._settlePromise0 (/usr/lib/node_modules/hexo/node_modules/bluebird/js/release/promise.js:614:10)</span><br><span class="line">    at Promise._settlePromises (/usr/lib/node_modules/hexo/node_modules/bluebird/js/release/promise.js:693:18)</span><br><span class="line">    at Promise._fulfill (/usr/lib/node_modules/hexo/node_modules/bluebird/js/release/promise.js:638:18)</span><br><span class="line">    at Promise._resolveCallback (/usr/lib/node_modules/hexo/node_modules/bluebird/js/release/promise.js:432:57)</span><br></pre></td></tr></table></figure>
+<p>这是因为<code>hexo</code>的初始化必须在一个空目录下，包括隐藏的目录。你的文件下应该会有一个<code>.git</code>å你刚刚创建的<code>index.html</code>，你需要暂时把他们移动到另外一个目录，初始化完成之后再移动回来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#移动出去</span><br><span class="line">mv index.html ../temp</span><br><span class="line">mv .git ../temp</span><br><span class="line"></span><br><span class="line">#初始化</span><br><span class="line">hexo init</span><br></pre></td></tr></table></figure>
+<p>这时候应该可以初始化成功了，<strong>然后用相同的方法移动回来，才能进行下一步</strong>安装一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<p>这个时候应该hexo就安装完成了。<br>然后你可以把这些东西push到你的hexo分支上去。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m &quot;xxx&quot;</span><br><span class="line">git push -u origin hexo</span><br></pre></td></tr></table></figure>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>安装完成后，我们需要配置一些我们要生成的信息，还有就是我们要部署的地址。在当前文件夹下，你会看到一个文件叫<code>_config.yml</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi _config.yml</span><br></pre></td></tr></table></figure>
+<p>里面会有一些信息，例如title,author都修改成你自己的就好了。注意里面有一项是<code>deploy</code>,需要修改成你的repo地址和分支，表示生成生个之后会push到你的repo的master分支上</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: git@github.com:username/username.github.io.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
+<p>其余的具体配置请参考<a href="https://hexo.io/docs/configuration.html" target="_blank" rel="noopener">Hexo 配置</a></p>
+<h2 id="文章"><a href="#文章" class="headerlink" title="文章"></a>文章</h2><p>配置完成后，我们尝试一下写一篇blog</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new &quot;test&quot;</span><br></pre></td></tr></table></figure>
+<p>这时候就会在 <code>source/_post</code>文件下生成一个 <code>test.md</code>的文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd source/_post</span><br><span class="line"></span><br><span class="line">vim test.md</span><br></pre></td></tr></table></figure>
+<p>在里面写一点内容，然后生成。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">hexo generate -d</span><br></pre></td></tr></table></figure>
+<p>这时候就会生成静态页面并自动push到你的master分支，在浏览器访问<code>username.github.io</code>就可以看到刚才生成的blog主页里会有这篇文章了。</p>
+<p>到这里，我们的博客就搭建好了，当然，你还可以为博客设置你喜欢的主题，做一些自己的定制等等。慢慢去摸索吧。</p>
 
       
     </div>
@@ -331,7 +382,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/android/" rel="tag"># android</a>
+            <a href="/tags/其他/" rel="tag"># 其他</a>
           
         </div>
       
@@ -340,6 +391,22 @@
       
       
 
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/06/Centos-6-5-安装-tmux-最新版/" rel="prev" title="Centos 6.5 安装 tmux 最新版">
+                Centos 6.5 安装 tmux 最新版 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
       
 
       
@@ -402,6 +469,10 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="kingty" />
+            
               <p class="site-author-name" itemprop="name">kingty</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
@@ -413,7 +484,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -426,7 +497,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -475,7 +546,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Android"><span class="nav-number">1.</span> <span class="nav-text">Android</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Contex"><span class="nav-number">1.</span> <span class="nav-text">Contex</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Github"><span class="nav-number">2.</span> <span class="nav-text">Github</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hexo"><span class="nav-number">3.</span> <span class="nav-text">Hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">3.2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文章"><span class="nav-number">3.3.</span> <span class="nav-text">文章</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -513,7 +584,7 @@
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
 
 
 
