@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="android," />
 
 
 
@@ -79,13 +79,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Kingty&#39;s Blog">
-<meta property="og:url" content="https://kingty.github.io/index.html">
+<meta name="description" content="简单用法Retrofit最简单的用法就是定义一个接口，创建Retrofit对象，调用create()方法得到一个service,然后自己根据service中的方法去做同步或者异步的请求，拿到数据对象，十分简单快速，简单代码如下： 123456789101112131415161718192021public interface GitHub &amp;#123;   @GET(&quot;/repos/&amp;#123;">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Retrofit 源码解析">
+<meta property="og:url" content="https://kingty.github.io/2018/06/08/Retrofit-源码解析/index.html">
 <meta property="og:site_name" content="Kingty&#39;s Blog">
+<meta property="og:description" content="简单用法Retrofit最简单的用法就是定义一个接口，创建Retrofit对象，调用create()方法得到一个service,然后自己根据service中的方法去做同步或者异步的请求，拿到数据对象，十分简单快速，简单代码如下： 123456789101112131415161718192021public interface GitHub &amp;#123;   @GET(&quot;/repos/&amp;#123;">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-06-08T02:12:33.944Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kingty&#39;s Blog">
+<meta name="twitter:title" content="Retrofit 源码解析">
+<meta name="twitter:description" content="简单用法Retrofit最简单的用法就是定义一个接口，创建Retrofit对象，调用create()方法得到一个service,然后自己根据service中的方法去做同步或者异步的请求，拿到数据对象，十分简单快速，简单代码如下： 123456789101112131415161718192021public interface GitHub &amp;#123;   @GET(&quot;/repos/&amp;#123;">
 
 
 
@@ -115,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="https://kingty.github.io/"/>
+  <link rel="canonical" href="https://kingty.github.io/2018/06/08/Retrofit-源码解析/"/>
 
 
 
 
 
-  <title>Kingty's Blog</title>
+  <title>Retrofit 源码解析 | Kingty's Blog</title>
   
 
 
@@ -140,8 +145,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -224,9 +228,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -256,9 +260,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/Retrofit-源码解析/" itemprop="url">Retrofit 源码解析</a></h2>
+          <h2 class="post-title" itemprop="name headline">Retrofit 源码解析</h2>
         
 
         <div class="post-meta">
@@ -308,9 +310,7 @@
       
 
       
-        
-          
-            <h2 id="简单用法"><a href="#简单用法" class="headerlink" title="简单用法"></a>简单用法</h2><p>Retrofit最简单的用法就是定义一个接口，创建<code>Retrofit</code>对象，调用<code>create()</code>方法得到一个<code>service</code>,<br>然后自己根据<code>service</code>中的方法去做同步或者异步的请求，拿到数据对象，十分简单快速，简单代码如下：</p>
+        <h2 id="简单用法"><a href="#简单用法" class="headerlink" title="简单用法"></a>简单用法</h2><p>Retrofit最简单的用法就是定义一个接口，创建<code>Retrofit</code>对象，调用<code>create()</code>方法得到一个<code>service</code>,<br>然后自己根据<code>service</code>中的方法去做同步或者异步的请求，拿到数据对象，十分简单快速，简单代码如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">GitHub</span> </span>&#123;</span><br><span class="line">   <span class="meta">@GET</span>(<span class="string">"/repos/&#123;owner&#125;/&#123;repo&#125;/contributors"</span>)</span><br><span class="line">   Call&lt;List&lt;Integer&gt;&gt; contributors(<span class="meta">@Path</span>(<span class="string">"owner"</span>) String owner,<span class="meta">@Path</span>(<span class="string">"repo"</span>) String repo);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.创建</span><br><span class="line">Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder().baseUrl(<span class="string">"xxx"</span>).build();</span><br><span class="line">.代理</span><br><span class="line">GitHub gitHub = retrofit.create(GitHub.class);</span><br><span class="line">Call&lt;List&lt;Integer&gt;&gt; call = gitHub.contributors(<span class="string">"xx"</span>, <span class="string">"xx"</span>);</span><br><span class="line">.执行</span><br><span class="line">call.enqueue(<span class="keyword">new</span> Callback&lt;List&lt;Integer&gt;&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;List&lt;Integer&gt;&gt; call, Response&lt;List&lt;Integer&gt;&gt; response)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(Call&lt;List&lt;Integer&gt;&gt; call, Throwable t)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <h2 id="流程分析"><a href="#流程分析" class="headerlink" title="流程分析"></a>流程分析</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p>那这么简单的过程，刚开始看的时候觉得有点懵é¼呀，怎么他就帮你完成了请求，你明明什么都没有做，下面我们按照它的流程慢慢来解析一下整个过程。<br>我们要用<code>Retrofit</code>,首先自然是要创建它,也就是这行代码<code>Retrofit retrofit = new Retrofit.Builder().baseUrl(&quot;xxx&quot;).build();</code>.<br>这里创建<code>Retrofit</code>是通过它的一个内部类<code>Builder</code>来创建的，也就是创建者模式，这个模式很简单，不知道的自行百度，谷歌。<br>好，我们来看看这个<code>builder</code>做了什么,除了初始化有个<code>Platform.get()</code>,直接看最后的<code>build()</code>,其余的方法都是设置参数，主要就是这个<code>build()</code>：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Builder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>(Platform.get());</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> Retrofit <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="number">1</span>.</span><br><span class="line">      <span class="keyword">if</span> (baseUrl == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Base URL required."</span>);</span><br><span class="line">      &#125;</span><br><span class="line">  <span class="number">2</span>.</span><br><span class="line">      okhttp3.Call.Factory callFactory = <span class="keyword">this</span>.callFactory;</span><br><span class="line">      <span class="keyword">if</span> (callFactory == <span class="keyword">null</span>) &#123;</span><br><span class="line">        callFactory = <span class="keyword">new</span> OkHttpClient();</span><br><span class="line">      &#125;</span><br><span class="line">  <span class="number">3</span>.</span><br><span class="line">      Executor callbackExecutor = <span class="keyword">this</span>.callbackExecutor;</span><br><span class="line">      <span class="keyword">if</span> (callbackExecutor == <span class="keyword">null</span>) &#123;</span><br><span class="line">        callbackExecutor = platform.defaultCallbackExecutor();</span><br><span class="line">      &#125;</span><br><span class="line">  <span class="number">4</span>.</span><br><span class="line">      <span class="comment">// Make a defensive copy of the adapters and add the default Call adapter.</span></span><br><span class="line">      List&lt;CallAdapter.Factory&gt; adapterFactories = <span class="keyword">new</span> ArrayList&lt;&gt;(<span class="keyword">this</span>.adapterFactories);</span><br><span class="line">      adapterFactories.add(platform.defaultCallAdapterFactory(callbackExecutor));</span><br><span class="line"> <span class="number">5</span>.</span><br><span class="line">      <span class="comment">// Make a defensive copy of the converters.</span></span><br><span class="line">      List&lt;Converter.Factory&gt; converterFactories = <span class="keyword">new</span> ArrayList&lt;&gt;(<span class="keyword">this</span>.converterFactories);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> Retrofit(callFactory, baseUrl, converterFactories, adapterFactories,</span><br><span class="line">          callbackExecutor, validateEagerly);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
@@ -365,8 +365,6 @@
 <p>  其实很简单，就是返回<code>factory.requestBodyConverter(type, parameterAnnotations, methodAnnotations, this);</code>，就是å·¥厂造一个<code>Converter</code><br>  这个工厂造的<code>Converter</code>怎么造，框架是不管的，总之你按照我给你定义的标准造一个来就是了。感兴趣就去看看<code>&#39;retrofit-converters&#39;</code>这个包里是怎么造的，也很简单<br>  然后通过<code>Converter</code>的<code>convert()</code>方法就把你想要的类型数据返回给你了，这个<code>convert()</code>方法也是你在实现<code>Converter</code>要自己实现的，当然源码里提供了一些实现，你自己去看。</p>
 <p>  整个流程就是这样的。希望对你阅读源代码有帮助。</p>
 
-          
-        
       
     </div>
     
@@ -381,269 +379,36 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://kingty.github.io/2018/06/06/Centos-6-5-安装-tmux-最新版/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kingty">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Kingty's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/06/Centos-6-5-安装-tmux-最新版/" itemprop="url">Centos 6.5 安装 tmux 最新版</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-06T20:32:15+08:00">
-                2018-06-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-
+            <a href="/tags/android/" rel="tag"># android</a>
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
       
-        
-          <h2 id="Contex"><a href="#Contex" class="headerlink" title="Contex"></a>Contex</h2><ul>
-<li>linux Centos6.5,64位</li>
-<li>tmux 2.7</li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/06/06/Centos-6-5-安装-tmux-最新版/#more" rel="contents">
-              Read more &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/06/Centos-6-5-安装-tmux-最新版/" rel="next" title="Centos 6.5 安装 tmux 最新版">
+                <i class="fa fa-chevron-left"></i> Centos 6.5 安装 tmux 最新版
+              </a>
+            
           </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
 
-    
+          <span class="post-nav-divider"></span>
 
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://kingty.github.io/2018/06/05/Hexo-Github-Blog-搭建/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kingty">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Kingty's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/05/Hexo-Github-Blog-搭建/" itemprop="url">Hexo&Github Blog 搭建</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+          <div class="post-nav-prev post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-05T16:39:23+08:00">
-                2018-06-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <p>今天用<code>Github Pages</code> 和 <code>Hexo</code> 来搭建了一个静态的博客。好处就是不需要数据库也不需要服务器，完全交由<code>Github</code>托管就可以拥有自己的博客。下面我记录了一下我自己的搭建的过程。</p>
-<h1 id="Contex"><a href="#Contex" class="headerlink" title="Contex"></a>Contex</h1><ul>
-<li>linux Cenos 6.5,64位</li>
-<li>Hexo 3.7.1</li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/06/05/Hexo-Github-Blog-搭建/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -653,10 +418,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -664,6 +430,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -684,8 +454,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -756,6 +535,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简单用法"><span class="nav-number">1.</span> <span class="nav-text">简单用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程分析"><span class="nav-number">2.</span> <span class="nav-text">流程分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建"><span class="nav-number">2.1.</span> <span class="nav-text">创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代理"><span class="nav-number">2.2.</span> <span class="nav-text">代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行"><span class="nav-number">2.3.</span> <span class="nav-text">执行</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -896,6 +691,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
