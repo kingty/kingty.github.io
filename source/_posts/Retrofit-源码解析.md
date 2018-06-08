@@ -9,6 +9,7 @@ tags: android
 Retrofit最简单的用法就是定义一个接口，创建`Retrofit`对象，调用`create()`方法得到一个`service`,
 然后自己根据`service`中的方法去做同步或者异步的请求，拿到数据对象，十分简单快速，简单代码如下：
 
+<!--more-->
 ```java 
 public interface GitHub {
    @GET("/repos/{owner}/{repo}/contributors")
