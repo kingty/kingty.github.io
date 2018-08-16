@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="在java中我们经常会重写到的两个方法，一个是equals(),还有一个是hashcode(). 为什么我们需要重写这两个方法？equals() 是用来比较两个对象是否相等，默认的Object的 equals()方法如下，是判断两个对象的地址是否相等，所以我们需要重写它来实现我们想要的两个对象是否相等。 1234public boolean equals(Object obj) &amp;#123;">
+<meta name="description" content="在java中我们经常会重写到的两个方法，一个是equals(),还有一个是hashcode(). 为什么我们需要重写这两个方法？equals() 是用来比较两个对象是否相等，默认的Object的 equals()方法如下，是判断两个对象的地址是否相等，所以我们需要重写它来实现我们想要的两个对象是否相等。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java equals() and hashcode()">
 <meta property="og:url" content="https://kingty.github.io/2018/08/16/java-equals-and-hashcode/index.html">
 <meta property="og:site_name" content="Kingty&#39;s Blog">
-<meta property="og:description" content="在java中我们经常会重写到的两个方法，一个是equals(),还有一个是hashcode(). 为什么我们需要重写这两个方法？equals() 是用来比较两个对象是否相等，默认的Object的 equals()方法如下，是判断两个对象的地址是否相等，所以我们需要重写它来实现我们想要的两个对象是否相等。 1234public boolean equals(Object obj) &amp;#123;">
+<meta property="og:description" content="在java中我们经常会重写到的两个方法，一个是equals(),还有一个是hashcode(). 为什么我们需要重写这两个方法？equals() 是用来比较两个对象是否相等，默认的Object的 equals()方法如下，是判断两个对象的地址是否相等，所以我们需要重写它来实现我们想要的两个对象是否相等。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-08-16T10:28:11.703Z">
+<meta property="og:updated_time" content="2018-08-16T10:36:07.586Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java equals() and hashcode()">
-<meta name="twitter:description" content="在java中我们经常会重写到的两个方法，一个是equals(),还有一个是hashcode(). 为什么我们需要重写这两个方法？equals() 是用来比较两个对象是否相等，默认的Object的 equals()方法如下，是判断两个对象的地址是否相等，所以我们需要重写它来实现我们想要的两个对象是否相等。 1234public boolean equals(Object obj) &amp;#123;">
+<meta name="twitter:description" content="在java中我们经常会重写到的两个方法，一个是equals(),还有一个是hashcode(). 为什么我们需要重写这两个方法？equals() 是用来比较两个对象是否相等，默认的Object的 equals()方法如下，是判断两个对象的地址是否相等，所以我们需要重写它来实现我们想要的两个对象是否相等。">
 
 
 
@@ -311,6 +311,7 @@
       
         <p>在java中我们经常会重写到的两个方法，一个是<code>equals()</code>,还有一个是<code>hashcode()</code>.</p>
 <h2 id="为什么我们需要重写这两个方法？"><a href="#为什么我们需要重写这两个方法？" class="headerlink" title="为什么我们需要重写这两个方法？"></a>为什么我们需要重写这两个方法？</h2><p><code>equals()</code> 是用来比较两个对象是否相等，默认的<code>Object</code>的 <code>equals()</code>方法如下，是判断两个对象的地址是否相等，所以我们需要重写它来实现我们想要的两个对象是否相等。</p>
+<a id="more"></a>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">this</span> == obj);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="那为什么需要重写hashcode-呢"><a href="#那为什么需要重写hashcode-呢" class="headerlink" title="那为什么需要重写hashcode()呢?"></a>那为什么需要重写<code>hashcode()</code>呢?</h2><p><code>hashcode()</code>是用于散列数据的快速存取，如利用HashSet/HashMap/Hashtable类来存储数据时，都是根据存储对象的hashcode值来进行判断是否相同的.<br>java文档里<code>equals()</code>方法下也有写：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Note that it is generally necessary to override the hashCode method whenever this method is overridden, so as to maintain the general contract for the hashCode method, which states that equal objects must have equal hash codes.</span><br></pre></td></tr></table></figure>
