@@ -79,13 +79,17 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Kingty&#39;s Blog">
-<meta property="og:url" content="https://kingty.github.io/index.html">
+<meta name="description" content="#Room 是如何做到响应式的？ ##前言因为我们常用的Rxjava，所以这里会结合RxRoom做分析，所以需要你有Rxjava相关的知识储备。 完整源码参见googlesamples，可以自己跑一下，体验一下。 ##简单用法 我在阅读一份代码时最喜欢的入手点就是先看怎么用，从用法去往前推导。 看下面的简单代码,也就是所谓的三大组件。 1234567891011121314151617181920">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Room 是如何做到响应式的？">
+<meta property="og:url" content="https://kingty.github.io/2018/10/23/Room-是如何做到响应式的？/index.html">
 <meta property="og:site_name" content="Kingty&#39;s Blog">
+<meta property="og:description" content="#Room 是如何做到响应式的？ ##前言因为我们常用的Rxjava，所以这里会结合RxRoom做分析，所以需要你有Rxjava相关的知识储备。 完整源码参见googlesamples，可以自己跑一下，体验一下。 ##简单用法 我在阅读一份代码时最喜欢的入手点就是先看怎么用，从用法去往前推导。 看下面的简单代码,也就是所谓的三大组件。 1234567891011121314151617181920">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-10-23T09:06:09.480Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kingty&#39;s Blog">
+<meta name="twitter:title" content="Room 是如何做到响应式的？">
+<meta name="twitter:description" content="#Room 是如何做到响应式的？ ##前言因为我们常用的Rxjava，所以这里会结合RxRoom做分析，所以需要你有Rxjava相关的知识储备。 完整源码参见googlesamples，可以自己跑一下，体验一下。 ##简单用法 我在阅读一份代码时最喜欢的入手点就是先看怎么用，从用法去往前推导。 看下面的简单代码,也就是所谓的三大组件。 1234567891011121314151617181920">
 
 
 
@@ -115,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="https://kingty.github.io/"/>
+  <link rel="canonical" href="https://kingty.github.io/2018/10/23/Room-是如何做到响应式的？/"/>
 
 
 
 
 
-  <title>Kingty's Blog</title>
+  <title>Room 是如何做到响应式的？ | Kingty's Blog</title>
   
 
 
@@ -140,8 +144,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -224,9 +227,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -256,9 +259,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/23/Room-是如何做到响应式的？/" itemprop="url">Room 是如何做到响应式的？</a></h2>
+          <h2 class="post-title" itemprop="name headline">Room 是如何做到响应式的？</h2>
         
 
         <div class="post-meta">
@@ -308,9 +309,7 @@
       
 
       
-        
-          
-            <p>#Room 是如何做到响应式的？</p>
+        <p>#Room 是如何做到响应式的？</p>
 <p>##前言<br>因为我们常用的Rxjava，所以这里会结合RxRoom做分析，所以需要你有Rxjava相关的知识储备。</p>
 <p>完整源码参见<a href="https://github.com/googlesamples/android-architecture-components/tree/master/BasicRxJavaSample/app/src/main/java/com/example/android/observability/persistence" target="_blank" rel="noopener">googlesamples</a>，可以自己跑一下，体验一下。</p>
 <p>##简单用法</p>
@@ -443,8 +442,6 @@
 <p>##小结</p>
 <p>到这里我们在整体上把这个Room是如何做到响应式的做了一个框架的解析。基本上也已经浏览了整个Room的核心代码。当然其中还有很多的细节，如果感兴趣可以自己去好好读一下。因为可能我也不太清楚。我也是初略的读了一下做了一些自己的分析。肯定有理解不对的地方。大家阅读过程中请辩证看待，多多指正。</p>
 
-          
-        
       
     </div>
     
@@ -461,137 +458,28 @@
       
 
       
-
-      
-
       
       
-        <div class="post-eof"></div>
+
       
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://kingty.github.io/2018/08/16/java-equals-and-hashcode/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kingty">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Kingty's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/16/java-equals-and-hashcode/" itemprop="url">java equals() and hashcode()</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-16T14:34:47+08:00">
-                2018-08-16
-              </time>
+              <a href="/2018/08/16/java-equals-and-hashcode/" rel="next" title="java equals() and hashcode()">
+                <i class="fa fa-chevron-left"></i> java equals() and hashcode()
+              </a>
             
+          </div>
 
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <p>在java中我们经常会重写到的两个方法，一个是<code>equals()</code>,还有一个是<code>hashcode()</code>.</p>
-<h2 id="为什么我们需要重写这两个方法？"><a href="#为什么我们需要重写这两个方法？" class="headerlink" title="为什么我们需要重写这两个方法？"></a>为什么我们需要重写这两个方法？</h2><p><code>equals()</code> 是用来比较两个对象是否相等，默认的<code>Object</code>的 <code>equals()</code>方法如下，是判断两个对象的地址是否相等，所以我们需要重写它来实现我们想要的两个对象是否相等。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/08/16/java-equals-and-hashcode/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -601,389 +489,11 @@
   </article>
 
 
-    
-      
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://kingty.github.io/2018/06/08/Retrofit-源码解析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kingty">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Kingty's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/Retrofit-源码解析/" itemprop="url">Retrofit 源码解析</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-08T10:11:19+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="简单用法"><a href="#简单用法" class="headerlink" title="简单用法"></a>简单用法</h2><p>Retrofit最简单的用法就是定义一个接口，创建<code>Retrofit</code>对象，调用<code>create()</code>方法得到一个<code>service</code>,<br>然后自己根据<code>service</code>中的方法去做同步或者异步的请求，拿到数据对象，十分简单快速，简单代码如下：</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/06/08/Retrofit-源码解析/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
+    <div class="post-spread">
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://kingty.github.io/2018/06/06/Centos-6-5-安装-tmux-最新版/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kingty">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Kingty's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/06/Centos-6-5-安装-tmux-最新版/" itemprop="url">Centos 6.5 安装 tmux 最新版</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-06T20:32:15+08:00">
-                2018-06-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="Contex"><a href="#Contex" class="headerlink" title="Contex"></a>Contex</h2><ul>
-<li>linux Centos6.5,64位</li>
-<li>tmux 2.7</li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/06/06/Centos-6-5-安装-tmux-最新版/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://kingty.github.io/2018/06/05/Hexo-Github-Blog-搭建/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kingty">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Kingty's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/05/Hexo-Github-Blog-搭建/" itemprop="url">Hexo&Github Blog 搭建</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-05T16:39:23+08:00">
-                2018-06-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>今天用<code>Github Pages</code> 和 <code>Hexo</code> 来搭建了一个静态的博客。好处就是不需要数据库也不需要服务器，完全交由<code>Github</code>托管就可以拥有自己的博客。下面我记录了一下我自己的搭建的过程。</p>
-<h1 id="Contex"><a href="#Contex" class="headerlink" title="Contex"></a>Contex</h1><ul>
-<li>linux Cenos 6.5,64位</li>
-<li>Hexo 3.7.1</li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/06/05/Hexo-Github-Blog-搭建/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-  </section>
-
-  
 
 
           </div>
@@ -991,6 +501,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -1011,8 +525,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -1083,6 +606,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么通过注解就可以操作数据库了？"><span class="nav-number">1.</span> <span class="nav-text">怎么通过注解就可以操作数据库了？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1223,6 +762,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
