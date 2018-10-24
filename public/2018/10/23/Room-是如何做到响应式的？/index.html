@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="#Room 是如何做到响应式的？ ##前言因为我们常用的Rxjava，所以这里会结合RxRoom做分析，所以需要你有Rxjava相关的知识储备。 完整源码参见googlesamples，可以自己跑一下，体验一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Room 是如何做到响应式的？">
+<meta property="og:url" content="https://kingty.github.io/2018/10/23/Room-是如何做到响应式的？/index.html">
+<meta property="og:site_name" content="Kingty&#39;s Blog">
+<meta property="og:description" content="#Room 是如何做到响应式的？ ##前言因为我们常用的Rxjava，所以这里会结合RxRoom做分析，所以需要你有Rxjava相关的知识储备。 完整源码参见googlesamples，可以自己跑一下，体验一下。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-10-23T09:08:05.701Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Room 是如何做到响应式的？">
+<meta name="twitter:description" content="#Room 是如何做到响应式的？ ##前言因为我们常用的Rxjava，所以这里会结合RxRoom做分析，所以需要你有Rxjava相关的知识储备。 完整源码参见googlesamples，可以自己跑一下，体验一下。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://kingty.github.io/2018/10/23/Room-是如何做到响应式的？/"/>
+
+
+
+
+
+  <title>Room 是如何做到响应式的？ | Kingty's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Kingty's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://kingty.github.io/2018/10/23/Room-是如何做到响应式的？/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kingty">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kingty's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Room 是如何做到响应式的？</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-23T17:05:08+08:00">
+                2018-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>#Room 是如何做到响应式的？</p>
+<p>##前言<br>因为我们常用的Rxjava，所以这里会结合RxRoom做分析，所以需要你有Rxjava相关的知识储备。</p>
+<p>完整源码参见<a href="https://github.com/googlesamples/android-architecture-components/tree/master/BasicRxJavaSample/app/src/main/java/com/example/android/observability/persistence" target="_blank" rel="noopener">googlesamples</a>，可以自己跑一下，体验一下。</p>
+<a id="more"></a>
+<p>##简单用法</p>
+<p>我在阅读一份代码时最喜欢的入手点就是先看怎么用，从用法去往前推导。</p>
+<p>看下面的简单代码,也就是所谓的三大组件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//首先是实体类对应到数据库也就是一个表</span></span><br><span class="line"><span class="meta">@Entity</span>(tableName = <span class="string">"users"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@PrimaryKey</span></span><br><span class="line">  <span class="meta">@ColumnInfo</span>(name = <span class="string">"userid"</span>)</span><br><span class="line">  <span class="keyword">private</span> String mId;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@ColumnInfo</span>(name = <span class="string">"username"</span>)</span><br><span class="line">  <span class="keyword">private</span> String mUserName;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//数据操作类</span></span><br><span class="line"><span class="meta">@Dao</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserDao</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Query</span>(<span class="string">"SELECT * FROM users LIMIT 1"</span>)</span><br><span class="line">  <span class="function">Flowable&lt;User&gt; <span class="title">getUser</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Insert</span>(onConflict = OnConflictStrategy.REPLACE)</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">insertUser</span><span class="params">(User user)</span></span>;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Database</span></span><br><span class="line"><span class="meta">@Database</span>(</span><br><span class="line">    entities = &#123;User.class,UserGroup.class&#125;,</span><br><span class="line">    version = <span class="number">1</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">UsersDatabase</span> <span class="keyword">extends</span> <span class="title">RoomDatabase</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> UsersDatabase INSTANCE;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> UserDao <span class="title">userDao</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UsersDatabase <span class="title">getInstance</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">synchronized</span> (UsersDatabase.class) &#123;</span><br><span class="line">        <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123;</span><br><span class="line">          INSTANCE =</span><br><span class="line">              Room.databaseBuilder(</span><br><span class="line">                      context.getApplicationContext(), UsersDatabase.class, <span class="string">"Sample.db"</span>)</span><br><span class="line">                  .build();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> INSTANCE;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>定义好上面的3个东西，我们就能直接用来<code>增删改查</code>了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">val database = UsersDatabase.getInstance(<span class="keyword">this</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//插入一条数据</span></span><br><span class="line">val user = User(<span class="string">"kingty"</span>)</span><br><span class="line">database.userDao().insertUser(user)</span><br><span class="line"></span><br><span class="line"><span class="comment">//监听一个查询的实时变化</span></span><br><span class="line">database.userDao().getUser().subscribe &#123;</span><br><span class="line">	Log.d(<span class="string">"TAG"</span>, <span class="string">"table changed =&gt; "</span> + it.userName + <span class="string">" =&gt; "</span> + it.id)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用法非常简单，做一些注解，它就自动帮你完成了<code>DAO</code>中的所有操作，并且还可以监听数据库的变化实时更新数据。这一切看起来比较梦幻。那么问题来了，它是怎么做到这一切的？</p>
+<h2 id="怎么通过注解就可以操作数据库了？"><a href="#怎么通过注解就可以操作数据库了？" class="headerlink" title="怎么通过注解就可以操作数据库了？"></a>怎么通过注解就可以操作数据库了？</h2><p>其实<code>ORM</code>的本质就是用一些手段把你的<code>数据类</code>和<code>操作</code>变成<code>SQL语句</code>而已。而这一切无非就是两种手段，编译时做（apt）或者运行时做（reflect）。出于效率考虑现在大部分都是编译时做。编译以下，所以我们来翻一翻<code>build</code>目录，看一下Room给我们生成了一些什么东西。</p>
+<ul>
+<li>build<ul>
+<li>generate<ul>
+<li>source<ul>
+<li>apt<ul>
+<li>com.kingty.roomtest<ul>
+<li><strong>UserDao_Impl.java</strong></li>
+<li><strong>UsersDatabase_Impl.java</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>就发现在上面这个目录下生成了两个类，这里我们不深究这里是怎么生成这两个类的，说起来可以说两天两夜。其实是我也不懂。有兴趣的同学应该早就知道了，没兴趣的我说不说也无所谓了。总之就是，编译的时候通过我们刚才那些个注解给我们生成了真正的实现类，帮助我们完成了我们想要的操作。</p>
+<p>来让我们看一下里面都生成了一些什么？</p>
+<p>先看一下<code>UserDao_Impl.java</code>这个类做了什么？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line">x<span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDao_Impl</span> <span class="keyword">implements</span> <span class="title">UserDao</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> RoomDatabase __db;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> EntityInsertionAdapter __insertionAdapterOfUser;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> SharedSQLiteStatement __preparedStmtOfDeleteAllUsers;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">UserDao_Impl</span><span class="params">(RoomDatabase __db)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.__db = __db;</span><br><span class="line">    <span class="keyword">this</span>.__insertionAdapterOfUser = <span class="keyword">new</span> EntityInsertionAdapter&lt;User&gt;(__db) &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> String <span class="title">createQuery</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"INSERT OR REPLACE INTO `users`(`userid`,`username`) VALUES (?,?)"</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">(SupportSQLiteStatement stmt, User value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (value.getId() == <span class="keyword">null</span>) &#123;</span><br><span class="line">          stmt.bindNull(<span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          stmt.bindString(<span class="number">1</span>, value.getId());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (value.getUserName() == <span class="keyword">null</span>) &#123;</span><br><span class="line">          stmt.bindNull(<span class="number">2</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          stmt.bindString(<span class="number">2</span>, value.getUserName());</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">this</span>.__preparedStmtOfDeleteAllUsers = <span class="keyword">new</span> SharedSQLiteStatement(__db) &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> String <span class="title">createQuery</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> String _query = <span class="string">"DELETE FROM Users"</span>;</span><br><span class="line">        <span class="keyword">return</span> _query;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertUser</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">    __db.beginTransaction();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      __insertionAdapterOfUser.insert(user);</span><br><span class="line">      __db.setTransactionSuccessful();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      __db.endTransaction();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteAllUsers</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> SupportSQLiteStatement _stmt = __preparedStmtOfDeleteAllUsers.acquire();</span><br><span class="line">    __db.beginTransaction();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      _stmt.executeUpdateDelete();</span><br><span class="line">      __db.setTransactionSuccessful();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      __db.endTransaction();</span><br><span class="line">      __preparedStmtOfDeleteAllUsers.release(_stmt);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Flowable&lt;User&gt; <span class="title">getUser</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> String _sql = <span class="string">"SELECT * FROM users LIMIT 1"</span>;</span><br><span class="line">    <span class="keyword">final</span> RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> RxRoom.createFlowable(__db, <span class="keyword">new</span> String[]&#123;<span class="string">"users"</span>&#125;, <span class="keyword">new</span> Callable&lt;User&gt;() &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> User <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> Cursor _cursor = DBUtil.query(__db, _statement, <span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="keyword">final</span> <span class="keyword">int</span> _cursorIndexOfMId = _cursor.getColumnIndexOrThrow(<span class="string">"userid"</span>);</span><br><span class="line">          <span class="keyword">final</span> <span class="keyword">int</span> _cursorIndexOfMUserName = _cursor.getColumnIndexOrThrow(<span class="string">"username"</span>);</span><br><span class="line">          <span class="keyword">final</span> User _result;</span><br><span class="line">          <span class="keyword">if</span>(_cursor.moveToFirst()) &#123;</span><br><span class="line">            <span class="keyword">final</span> String _tmpMId;</span><br><span class="line">            _tmpMId = _cursor.getString(_cursorIndexOfMId);</span><br><span class="line">            <span class="keyword">final</span> String _tmpMUserName;</span><br><span class="line">            _tmpMUserName = _cursor.getString(_cursorIndexOfMUserName);</span><br><span class="line">            _result = <span class="keyword">new</span> User(_tmpMId,_tmpMUserName);</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            _result = <span class="keyword">null</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">return</span> _result;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">          _cursor.close();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">finalize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        _statement.release();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先，在初始化<code>UserDao_Impl</code>的时候通过<code>EntityInsertionAdapter</code>帮你创建了插入数据的<code>adapter</code>，里面有插入数据的sql模板，和绑定数据的方法。通俗一点说就是在这里帮你拼好了插入数据的SQL语句。接下来就是帮你实现了你在<code>UserDao</code>中定义的接口。</p>
+<p><code>增删改</code>的套路大概类似，都是<code>__db.beginTransaction();</code>然后执行拼好的SQL语句，然后<code>__db.endTransaction();</code>注意此DB非彼DB，这个DB是封装过的RoomDatabase。后面我们会着重讲一下这个<code>beginTransaction</code>和<code>endTransaction</code>,他们还是比较重要的一个环节。 <strong><code>重要环节一</code></strong>。</p>
+<p><code>查</code>的套路就不一样了,为什么它不一样，<code>public Flowable&lt;User&gt; getUser()</code>这个方法明显看起来大坨一些，这就是它为什么不一样。简单阅读一下，它其实利用RxRoom创建了一个<code>Flowable</code>,其中有3个参数我们注意一下，第一个是<code>__db</code>也就是database,第二个是<code>new String[]{&quot;users&quot;}</code>,是一个表名的数组,第3个就是查询完成之后组装成<code>User</code>的回调。特别注意的是第二个参数，这个表名的数组的作用。这是<strong><code>重要环节二</code></strong>。</p>
+<p>再看看<code>UsersDatabase_Impl.java</code>这个类的生成了什么？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">UsersDatabase_Impl</span> <span class="keyword">extends</span> <span class="title">UsersDatabase</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> UserDao _userDao;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> SupportSQLiteOpenHelper <span class="title">createOpenHelper</span><span class="params">(DatabaseConfiguration configuration)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> SupportSQLiteOpenHelper.Callback _openCallback = <span class="keyword">new</span> RoomOpenHelper(configuration, <span class="keyword">new</span> RoomOpenHelper.Delegate(<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createAllTables</span><span class="params">(SupportSQLiteDatabase _db)</span> </span>&#123;</span><br><span class="line">        _db.execSQL(<span class="string">"CREATE TABLE IF NOT EXISTS `users` (`userid` TEXT NOT NULL, `username` TEXT, PRIMARY KEY(`userid`))"</span>);</span><br><span class="line">        _db.execSQL(<span class="string">"CREATE TABLE IF NOT EXISTS `usergroups` (`userGroupId` TEXT NOT NULL, `groupName` TEXT, PRIMARY KEY(`userGroupId`))"</span>);</span><br><span class="line">        _db.execSQL(<span class="string">"CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)"</span>);</span><br><span class="line">        _db.execSQL(<span class="string">"INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8890a9730e4846f27da03382221fc877\")"</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dropAllTables</span><span class="params">(SupportSQLiteDatabase _db)</span> </span>&#123;</span><br><span class="line">        _db.execSQL(<span class="string">"DROP TABLE IF EXISTS `users`"</span>);</span><br><span class="line">        _db.execSQL(<span class="string">"DROP TABLE IF EXISTS `usergroups`"</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(SupportSQLiteDatabase _db)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mCallbacks != <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> _i = <span class="number">0</span>, _size = mCallbacks.size(); _i &lt; _size; _i++) &#123;</span><br><span class="line">            mCallbacks.get(_i).onCreate(_db);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOpen</span><span class="params">(SupportSQLiteDatabase _db)</span> </span>&#123;</span><br><span class="line">        mDatabase = _db;</span><br><span class="line">        internalInitInvalidationTracker(_db);</span><br><span class="line">        <span class="keyword">if</span> (mCallbacks != <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> _i = <span class="number">0</span>, _size = mCallbacks.size(); _i &lt; _size; _i++) &#123;</span><br><span class="line">            mCallbacks.get(_i).onOpen(_db);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPreMigrate</span><span class="params">(SupportSQLiteDatabase _db)</span> </span>&#123;</span><br><span class="line">        DBUtil.dropFtsSyncTriggers(_db);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPostMigrate</span><span class="params">(SupportSQLiteDatabase _db)</span> </span>&#123;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">validateMigration</span><span class="params">(SupportSQLiteDatabase _db)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> HashMap&lt;String, TableInfo.Column&gt; _columnsUsers = <span class="keyword">new</span> HashMap&lt;String, TableInfo.Column&gt;(<span class="number">2</span>);</span><br><span class="line">        _columnsUsers.put(<span class="string">"userid"</span>, <span class="keyword">new</span> TableInfo.Column(<span class="string">"userid"</span>, <span class="string">"TEXT"</span>, <span class="keyword">true</span>, <span class="number">1</span>));</span><br><span class="line">        _columnsUsers.put(<span class="string">"username"</span>, <span class="keyword">new</span> TableInfo.Column(<span class="string">"username"</span>, <span class="string">"TEXT"</span>, <span class="keyword">false</span>, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">final</span> HashSet&lt;TableInfo.ForeignKey&gt; _foreignKeysUsers = <span class="keyword">new</span> HashSet&lt;TableInfo.ForeignKey&gt;(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">final</span> HashSet&lt;TableInfo.Index&gt; _indicesUsers = <span class="keyword">new</span> HashSet&lt;TableInfo.Index&gt;(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">final</span> TableInfo _infoUsers = <span class="keyword">new</span> TableInfo(<span class="string">"users"</span>, _columnsUsers, _foreignKeysUsers, _indicesUsers);</span><br><span class="line">        <span class="keyword">final</span> TableInfo _existingUsers = TableInfo.read(_db, <span class="string">"users"</span>);</span><br><span class="line">        <span class="keyword">if</span> (! _infoUsers.equals(_existingUsers)) &#123;</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Migration didn't properly handle users(com.kingty.roomtest.User).\n"</span></span><br><span class="line">                  + <span class="string">" Expected:\n"</span> + _infoUsers + <span class="string">"\n"</span></span><br><span class="line">                  + <span class="string">" Found:\n"</span> + _existingUsers);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">final</span> HashMap&lt;String, TableInfo.Column&gt; _columnsUsergroups = <span class="keyword">new</span> HashMap&lt;String, TableInfo.Column&gt;(<span class="number">2</span>);</span><br><span class="line">        _columnsUsergroups.put(<span class="string">"userGroupId"</span>, <span class="keyword">new</span> TableInfo.Column(<span class="string">"userGroupId"</span>, <span class="string">"TEXT"</span>, <span class="keyword">true</span>, <span class="number">1</span>));</span><br><span class="line">        _columnsUsergroups.put(<span class="string">"groupName"</span>, <span class="keyword">new</span> TableInfo.Column(<span class="string">"groupName"</span>, <span class="string">"TEXT"</span>, <span class="keyword">false</span>, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">final</span> HashSet&lt;TableInfo.ForeignKey&gt; _foreignKeysUsergroups = <span class="keyword">new</span> HashSet&lt;TableInfo.ForeignKey&gt;(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">final</span> HashSet&lt;TableInfo.Index&gt; _indicesUsergroups = <span class="keyword">new</span> HashSet&lt;TableInfo.Index&gt;(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">final</span> TableInfo _infoUsergroups = <span class="keyword">new</span> TableInfo(<span class="string">"usergroups"</span>, _columnsUsergroups, _foreignKeysUsergroups, _indicesUsergroups);</span><br><span class="line">        <span class="keyword">final</span> TableInfo _existingUsergroups = TableInfo.read(_db, <span class="string">"usergroups"</span>);</span><br><span class="line">        <span class="keyword">if</span> (! _infoUsergroups.equals(_existingUsergroups)) &#123;</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Migration didn't properly handle usergroups(com.kingty.roomtest.UserGroup).\n"</span></span><br><span class="line">                  + <span class="string">" Expected:\n"</span> + _infoUsergroups + <span class="string">"\n"</span></span><br><span class="line">                  + <span class="string">" Found:\n"</span> + _existingUsergroups);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;, <span class="string">"8890a9730e4846f27da03382221fc877"</span>, <span class="string">"1fdb937160bfb054175cfe5daf922b3b"</span>);</span><br><span class="line">    <span class="keyword">final</span> SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(configuration.context)</span><br><span class="line">        .name(configuration.name)</span><br><span class="line">        .callback(_openCallback)</span><br><span class="line">        .build();</span><br><span class="line">    <span class="keyword">final</span> SupportSQLiteOpenHelper _helper = configuration.sqliteOpenHelperFactory.create(_sqliteConfig);</span><br><span class="line">    <span class="keyword">return</span> _helper;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> InvalidationTracker <span class="title">createInvalidationTracker</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> HashMap&lt;String, String&gt; _shadowTablesMap = <span class="keyword">new</span> HashMap&lt;String, String&gt;(<span class="number">0</span>);</span><br><span class="line">    HashMap&lt;String, Set&lt;String&gt;&gt; _viewTables = <span class="keyword">new</span> HashMap&lt;String, Set&lt;String&gt;&gt;(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> InvalidationTracker(<span class="keyword">this</span>, _shadowTablesMap, _viewTables, <span class="string">"users"</span>,<span class="string">"usergroups"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clearAllTables</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.assertNotMainThread();</span><br><span class="line">    <span class="keyword">final</span> SupportSQLiteDatabase _db = <span class="keyword">super</span>.getOpenHelper().getWritableDatabase();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">super</span>.beginTransaction();</span><br><span class="line">      _db.execSQL(<span class="string">"DELETE FROM `users`"</span>);</span><br><span class="line">      _db.execSQL(<span class="string">"DELETE FROM `usergroups`"</span>);</span><br><span class="line">      <span class="keyword">super</span>.setTransactionSuccessful();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      <span class="keyword">super</span>.endTransaction();</span><br><span class="line">      _db.query(<span class="string">"PRAGMA wal_checkpoint(FULL)"</span>).close();</span><br><span class="line">      <span class="keyword">if</span> (!_db.inTransaction()) &#123;</span><br><span class="line">        _db.execSQL(<span class="string">"VACUUM"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> UserDao <span class="title">userDao</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (_userDao != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> _userDao;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">synchronized</span>(<span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span>(_userDao == <span class="keyword">null</span>) &#123;</span><br><span class="line">          _userDao = <span class="keyword">new</span> UserDao_Impl(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> _userDao;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个类中逻辑比较清晰。首先是创建了一个<code>SupportSQLiteOpenHelper</code>来帮你拼了一些必要的SQL语句，比如create table,drop table,open和migrate迁移数据等等。后面还有一个初始化真正的DAO实现类<code>UserDao_Impl</code>和删除相关的表数据的方法<code>clearAllTables</code></p>
+<p>这些都是一些比较好理解的。然后我们会看到一个我们不好理解的方法<code>createInvalidationTracker ()</code>,这个是用来做什么的？我们先把这个疑问留下，叫做  <strong>重要环节三</strong></p>
+<p>##正式初略阅读Room的源码</p>
+<p>下面我们提出几个问题：</p>
+<ul>
+<li>在上面生成的代码中我们看到操作的执行都是通过一个叫<code>RoomDatabase</code>的<code>_db</code>来做的，那<code>RoomDatabase</code>是什么？</li>
+<li>重要环节一，在执行前后<code>beginTransaction</code>和<code>endTransaction</code>做了什么?</li>
+<li>重要环节二，创建<code>Flowable</code>的时候做了什么，为什么需要<code>table names</code>?</li>
+<li>重要环节三，<code>createInvalidationTracker（）</code>是做什么用的？</li>
+<li>最后，串联起上面的问题，当一个表发生更改，监听一个查询的实时变化是怎么做到的？</li>
+</ul>
+<p>带着这几个问题，我们大体的去阅读一下源码。阅读过程中我们有一个原则，就是先不要特别在意细节，先捋通大概的逻辑流程。如果你对细节感兴趣，再去扣细节。</p>
+<p>在项目中加以下引用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">implementation &apos;androidx.room:room-runtime:2.1.0-alpha01&apos;</span><br><span class="line">    </span><br><span class="line">annotationProcessor &apos;androidx.room:room-compiler:2.1.0-alpha01&apos;</span><br><span class="line"></span><br><span class="line">implementation &apos;androidx.room:room-rxjava2:2.1.0-alpha01&apos;</span><br></pre></td></tr></table></figure>
+<p>编译之后我们可以在<code>External Libraries</code>目录下看到以下几个包：</p>
+<ul>
+<li>androidx.room:room-commom</li>
+<li>androidx.room:room-runtime</li>
+<li>androidx.room:room-rxjava</li>
+<li>androidx.sqlite:sqlite</li>
+<li>androidx.sqlite:sqlite-framework</li>
+</ul>
+<p>我先简单的介绍下这几个包大概是做什么的。</p>
+<p><code>androidx.sqlite:sqlite</code>这个包主要是重新定义了一层SQLite的Support接口。<br><code>androidx.sqlite:sqlite-framework</code>这个包主要是利用原有的android的<code>Sqlite</code>相关的API实现了上面定义的接口。<br>这两个包主要是对原有的API做了一层代理封装，我的理解是便于扩展。因此我们在看<code>Room</code>代码的时候这部分代码大概浏览一下就OK，不必深究。</p>
+<p><code>androidx.room:room-commom</code>包中定义了一些公共的属性，和我们用到的所有的注解。<br><code>androidx.room:room-runtime</code>是我们需要主要阅读的逻辑所在的包，Room的核心逻辑都在这个包中。<br><code>androidx.room:room-rxjava</code>当我们需要返回一个Rx包装过的结果的时候，需要这个包。里面就是一个重要类<code>RxRoom.java</code>用来把Query包装成一个可观察的对象。</p>
+<p>下面我们带着上面的问题来看一下代码。</p>
+<p><strong><code>RoomDatabase</code>是做什么的？</strong></p>
+<p>代码太长就不全贴，我们看一下它持有的成员变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">protected volatile SupportSQLiteDatabase mDatabase;</span><br><span class="line">private Executor mQueryExecutor;</span><br><span class="line">private SupportSQLiteOpenHelper mOpenHelper;</span><br><span class="line">private final InvalidationTracker mInvalidationTracker;</span><br><span class="line">private boolean mAllowMainThreadQueries;</span><br><span class="line">boolean mWriteAheadLoggingEnabled;</span><br></pre></td></tr></table></figure>
+<p>它其实是对数据库的进一步封装，利用真正的<code>SupportSQLiteDatabase</code>和你<code>UsersDatabase_Impl</code>自动生成的<code>createOpenHelper()</code>提供的<code>SupportSQLiteOpenHelper</code>来操作数据库。进一步封装了<code>Transcation</code>并封装了一些其他的逻辑。</p>
+<p><strong><code>beginTransaction</code>和<code>endTransaction</code>做了什么?</strong></p>
+<p>实际上这也是上一个问题的一部分，先看看<code>beginTransaction</code>的代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Wrapper for &#123;<span class="doctag">@link</span> SupportSQLiteDatabase#beginTransaction()&#125;.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beginTransaction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       assertNotMainThread();<span class="comment">//禁止主线程执行</span></span><br><span class="line">       SupportSQLiteDatabase database = mOpenHelper.getWritableDatabase();<span class="comment">//拿到真正的数据库对象</span></span><br><span class="line">       mInvalidationTracker.syncTriggers(database);<span class="comment">//??</span></span><br><span class="line">       database.beginTransaction();<span class="comment">//开启事务</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>从上面的代码来看其他3句都非常好理解，正常的数据库事务流程，但是在开启事务之前做了一个操作<code>mInvalidationTracker.syncTriggers(database);</code></p>
+<p>我们先不忙解释这个是什么意思。我们在看看<code>endTransaction</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Wrapper for &#123;<span class="doctag">@link</span> SupportSQLiteDatabase#endTransaction()&#125;.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">endTransaction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       mOpenHelper.getWritableDatabase().endTransaction();<span class="comment">//结束事务</span></span><br><span class="line">       <span class="keyword">if</span> (!inTransaction()) &#123;</span><br><span class="line">           <span class="comment">// enqueue refresh only if we are NOT in a transaction. Otherwise, wait for the last</span></span><br><span class="line">           <span class="comment">// endTransaction call to do it.</span></span><br><span class="line">           mInvalidationTracker.refreshVersionsAsync();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>第一句是正常的结束事务的语句，但是结束之后等待最后一个事务结束，会做一个操作<code>mInvalidationTracker.refreshVersionsAsync();</code></p>
+<p>也就是说在开启事务之前，结束事务之后都调用了InvalidationTracker做了一些逻辑，再结合上面的第四个问题，重要环节三<code>createInvalidationTracker（）是做什么用的？</code>,一切问题都指向了<code>InvalidationTracker</code>。</p>
+<p><code>InvalidationTracker</code>这个类是什么作用，我们先从上面的第四个问题看起。</p>
+<p><strong><code>createInvalidationTracker（）</code>是做什么用的？</strong></p>
+<p>下面是在自动生成的<code>UsersDatabase_Impl.java</code>类中的方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">protected InvalidationTracker createInvalidationTracker() &#123;</span><br><span class="line">  final HashMap&lt;String, String&gt; _shadowTablesMap = new HashMap&lt;String, String&gt;(0);</span><br><span class="line">  HashMap&lt;String, Set&lt;String&gt;&gt; _viewTables = new HashMap&lt;String, Set&lt;String&gt;&gt;(0);</span><br><span class="line">  return new InvalidationTracker(this, _shadowTablesMap, _viewTables, &quot;users&quot;,&quot;usergroups&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在RoomDatabase在被初始化的时候调用这个方法赋值给成员变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">     * Creates a RoomDatabase.</span><br><span class="line">     * &lt;p&gt;</span><br><span class="line">     * You cannot create an instance of a database, instead, you should acquire it via</span><br><span class="line">     * &#123;@link Room#databaseBuilder(Context, Class, String)&#125; or</span><br><span class="line">     * &#123;@link Room#inMemoryDatabaseBuilder(Context, Class)&#125;.</span><br><span class="line">     */</span><br><span class="line">    public RoomDatabase() &#123;</span><br><span class="line">        mInvalidationTracker = createInvalidationTracker();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>因此回答上面的问题就是<code>createInvalidationTracker（）</code>给RoomDatabase提供了一个mInvalidationTracker实例。</p>
+<p><strong>mInvalidationTracker起的作用是什么？</strong></p>
+<p>我们来看一下<code>RoomDatabase.java</code>中的调用流程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">1.初始化</span><br><span class="line"></span><br><span class="line">public RoomDatabase() &#123;</span><br><span class="line">        mInvalidationTracker = createInvalidationTracker();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">2.init中调用mInvalidationTracker.startMultiInstanceInvalidation(configuration.context,configuration.name);</span><br><span class="line"></span><br><span class="line">@CallSuper</span><br><span class="line">    public void init(@NonNull DatabaseConfiguration configuration) &#123;</span><br><span class="line">        mOpenHelper = createOpenHelper(configuration);</span><br><span class="line">        boolean wal = false;</span><br><span class="line">        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN) &#123;</span><br><span class="line">            wal = configuration.journalMode == JournalMode.WRITE_AHEAD_LOGGING;</span><br><span class="line">            mOpenHelper.setWriteAheadLoggingEnabled(wal);</span><br><span class="line">        &#125;</span><br><span class="line">        mCallbacks = configuration.callbacks;</span><br><span class="line">        mQueryExecutor = configuration.queryExecutor;</span><br><span class="line">        mAllowMainThreadQueries = configuration.allowMainThreadQueries;</span><br><span class="line">        mWriteAheadLoggingEnabled = wal;</span><br><span class="line">        if (configuration.multiInstanceInvalidation) &#123;</span><br><span class="line">            mInvalidationTracker.startMultiInstanceInvalidation(configuration.context,</span><br><span class="line">                    configuration.name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line"> 3.每次Transaction 开始之前调用mInvalidationTracker.syncTriggers</span><br><span class="line"> </span><br><span class="line">  /**</span><br><span class="line">     * Wrapper for &#123;@link SupportSQLiteDatabase#beginTransaction()&#125;.</span><br><span class="line">     */</span><br><span class="line">    public void beginTransaction() &#123;</span><br><span class="line">        assertNotMainThread();</span><br><span class="line">        SupportSQLiteDatabase database = mOpenHelper.getWritableDatabase();</span><br><span class="line">        mInvalidationTracker.syncTriggers(database);</span><br><span class="line">        database.beginTransaction();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">4. 最后一个Transaction 结束之后调用mInvalidationTracker.refreshVersionsAsync</span><br><span class="line">    /**</span><br><span class="line">     * Wrapper for &#123;@link SupportSQLiteDatabase#endTransaction()&#125;.</span><br><span class="line">     */</span><br><span class="line">    public void endTransaction() &#123;</span><br><span class="line">        mOpenHelper.getWritableDatabase().endTransaction();</span><br><span class="line">        if (!inTransaction()) &#123;</span><br><span class="line">            // enqueue refresh only if we are NOT in a transaction. Otherwise, wait for the last</span><br><span class="line">            // endTransaction call to do it.</span><br><span class="line">            mInvalidationTracker.refreshVersionsAsync();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line"> 5，close数据库的时候mInvalidationTracker.stopMultiInstanceInvalidation();与第2步对应。</span><br><span class="line"> </span><br><span class="line">  /**</span><br><span class="line">     * Closes the database if it is already open.</span><br><span class="line">     */</span><br><span class="line">    public void close() &#123;</span><br><span class="line">        if (isOpen()) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                mCloseLock.lock();</span><br><span class="line">                mInvalidationTracker.stopMultiInstanceInvalidation();</span><br><span class="line">                mOpenHelper.close();</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                mCloseLock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>上面就是InvalidationTracker在RoomDatabase中的整个生命周期中的调用情况。从代码上来看它其实是在track整个数据的更改情况，因为它在每个transcation前后做了一些调用。结合上面最后的一个问题<code>当一个表发生更改，监听一个查询的实时变化是怎么做到的</code>。大概可以猜测出来这个类的主要作用是来保证数据发生更改的时候，保证可以通知到这个表上其他的Query。</p>
+<p><strong>怎么样实现的监听？</strong></p>
+<p>我们发现上面还有一个问题我们还没有提到<code>重要环节二，创建Flowable的时候做了什么，为什么需要table names?</code></p>
+<p>我们从这里入手讲起。先看下面<code>RxRoom</code>中的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">public static Flowable&lt;Object&gt; createFlowable(final RoomDatabase database,</span><br><span class="line">           final String... tableNames) &#123;</span><br><span class="line">       return Flowable.create(new FlowableOnSubscribe&lt;Object&gt;() &#123;</span><br><span class="line">           @Override</span><br><span class="line">           public void subscribe(final FlowableEmitter&lt;Object&gt; emitter) throws Exception &#123;</span><br><span class="line">               final InvalidationTracker.Observer observer = new InvalidationTracker.Observer(</span><br><span class="line">                       tableNames) &#123;</span><br><span class="line">                   @Override</span><br><span class="line">                   public void onInvalidated(@androidx.annotation.NonNull Set&lt;String&gt; tables) &#123;</span><br><span class="line">                       if (!emitter.isCancelled()) &#123;</span><br><span class="line">                           emitter.onNext(NOTHING);</span><br><span class="line">                       &#125;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;;</span><br><span class="line">               if (!emitter.isCancelled()) &#123;</span><br><span class="line">                   database.getInvalidationTracker().addObserver(observer);</span><br><span class="line">                   emitter.setDisposable(Disposables.fromAction(new Action() &#123;</span><br><span class="line">                       @Override</span><br><span class="line">                       public void run() throws Exception &#123;</span><br><span class="line">                           database.getInvalidationTracker().removeObserver(observer);</span><br><span class="line">                       &#125;</span><br><span class="line">                   &#125;));</span><br><span class="line">               &#125;</span><br><span class="line"></span><br><span class="line">               // emit once to avoid missing any data and also easy chaining</span><br><span class="line">               if (!emitter.isCancelled()) &#123;</span><br><span class="line">                   emitter.onNext(NOTHING);</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;, BackpressureStrategy.LATEST);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * Helper method used by generated code to bind a Callable such that it will be run in</span><br><span class="line">    * our disk io thread and will automatically block null values since RxJava2 does not like null.</span><br><span class="line">    *</span><br><span class="line">    * @hide</span><br><span class="line">    */</span><br><span class="line">   @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)</span><br><span class="line">   public static &lt;T&gt; Flowable&lt;T&gt; createFlowable(final RoomDatabase database,</span><br><span class="line">           final String[] tableNames, final Callable&lt;T&gt; callable) &#123;</span><br><span class="line">       Scheduler scheduler = Schedulers.from(database.getQueryExecutor());</span><br><span class="line">       final Maybe&lt;T&gt; maybe = Maybe.fromCallable(callable);</span><br><span class="line">       return createFlowable(database, tableNames)</span><br><span class="line">               .observeOn(scheduler)</span><br><span class="line">               .flatMapMaybe(new Function&lt;Object, MaybeSource&lt;T&gt;&gt;() &#123;</span><br><span class="line">                   @Override</span><br><span class="line">                   public MaybeSource&lt;T&gt; apply(Object o) throws Exception &#123;</span><br><span class="line">                       return maybe;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>在上面生成的<code>UserDao_Impl.java</code>类中<code>getUser（）</code>这个方法中调用的<code>createFlowable</code>这个方法，也就是上面的第二个方法，它实际上调用的上面的第一个方法flatmap到这个本次的查询。也就是说只要第一个方法中的Flowable发射一次数据，那么这个查询就会执行一次，并返回结果（也就是执行这个callable）。这里应该就能看出一点端倪，其实第一个方法就是创建出来一个观察这个表变化的观察者<code>InvalidationTracker.Observer</code>并把它添加到InvalidationTracker的观察者列表中去，因为一个表肯定不止一个观察者，所有的Query应该都需要观察表的更改。也就是上面的这行代码<code>database.getInvalidationTracker().addObserver(observer);</code>到这里<code>RxRoom</code>这个类的使命就完成了，他就是这样一个简单的功能，后面你也不需要再关心它。</p>
+<p><code>InvalidationTracker.Observer</code>是一个静态类，就注意一下其中的一个方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> /**</span><br><span class="line">         * Called when one of the observed tables is invalidated in the database.</span><br><span class="line">         *</span><br><span class="line">         * @param tables A set of invalidated tables. This is useful when the observer targets</span><br><span class="line">         *               multiple tables and you want to know which table is invalidated. This will</span><br><span class="line">         *               be names of underlying tables when you are observing views.</span><br><span class="line">public abstract void onInvalidated(@NonNull Set&lt;String&gt; tables);</span><br></pre></td></tr></table></figure>
+<p>从备注上已经写的很清楚了，就是表发生更改状态的时候会调用这个方法，<code>emitter</code>就会发射数据，通知<code>Query</code>去requery.<br>我们着重看一下<code>addObserver</code>这个方法干了什么？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">@WorkerThread</span><br><span class="line">   public void addObserver(@NonNull Observer observer) &#123;</span><br><span class="line">       final String[] tableNames = resolveViews(observer.mTables);</span><br><span class="line">       int[] tableIds = new int[tableNames.length];</span><br><span class="line">       final int size = tableNames.length;</span><br><span class="line">       long[] versions = new long[tableNames.length];</span><br><span class="line"></span><br><span class="line">       // TODO sync versions ?</span><br><span class="line">       for (int i = 0; i &lt; size; i++) &#123;</span><br><span class="line">           Integer tableId = mTableIdLookup.get(tableNames[i].toLowerCase(Locale.US));</span><br><span class="line">           if (tableId == null) &#123;</span><br><span class="line">               throw new IllegalArgumentException(&quot;There is no table with name &quot; + tableNames[i]);</span><br><span class="line">           &#125;</span><br><span class="line">           tableIds[i] = tableId;</span><br><span class="line">           versions[i] = mMaxVersion;</span><br><span class="line">       &#125;</span><br><span class="line">       ObserverWrapper wrapper = new ObserverWrapper(observer, tableIds, tableNames, versions);</span><br><span class="line">       ObserverWrapper currentObserver;</span><br><span class="line">       synchronized (mObserverMap) &#123;</span><br><span class="line">           currentObserver = mObserverMap.putIfAbsent(observer, wrapper);</span><br><span class="line">       &#125;</span><br><span class="line">       if (currentObserver == null &amp;&amp; mObservedTableTracker.onAdded(tableIds)) &#123;</span><br><span class="line">           syncTriggers();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>首先对<code>Observer</code>做了一层包装，主要就是包装了当表发生变化的时候通过各种方式去通知也就是执行<code>mObserver.onInvalidated(invalidatedTables);</code>,接下来，把包装后的wrapper放进map里。然后在满足特定条件下会执行<code>syncTriggers();</code>这个似曾相识，在上面<code>RoomDatabase</code>开始一个事务之前也执行这个方法。我们来仔细看看这个方法做了什么。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">void syncTriggers(SupportSQLiteDatabase database) &#123;</span><br><span class="line">        if (database.inTransaction()) &#123;</span><br><span class="line">            // we won&apos;t run this inside another transaction.</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        try &#123;</span><br><span class="line">            // This method runs in a while loop because while changes are synced to db, another</span><br><span class="line">            // runnable may be skipped. If we cause it to skip, we need to do its work.</span><br><span class="line">            while (true) &#123;</span><br><span class="line">                Lock closeLock = mDatabase.getCloseLock();</span><br><span class="line">                closeLock.lock();</span><br><span class="line">                try &#123;</span><br><span class="line">                    // there is a potential race condition where another mSyncTriggers runnable</span><br><span class="line">                    // can start running right after we get the tables list to sync.</span><br><span class="line">                    final int[] tablesToSync = mObservedTableTracker.getTablesToSync();</span><br><span class="line">                    if (tablesToSync == null) &#123;</span><br><span class="line">                        return;</span><br><span class="line">                    &#125;</span><br><span class="line">                    final int limit = tablesToSync.length;</span><br><span class="line">                    try &#123;</span><br><span class="line">                        database.beginTransaction();</span><br><span class="line">                        for (int tableId = 0; tableId &lt; limit; tableId++) &#123;</span><br><span class="line">                            switch (tablesToSync[tableId]) &#123;</span><br><span class="line">                                case ObservedTableTracker.ADD:</span><br><span class="line">                                    startTrackingTable(database, tableId);</span><br><span class="line">                                    break;</span><br><span class="line">                                case ObservedTableTracker.REMOVE:</span><br><span class="line">                                    stopTrackingTable(database, tableId);</span><br><span class="line">                                    break;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                        database.setTransactionSuccessful();</span><br><span class="line">                    &#125; finally &#123;</span><br><span class="line">                        database.endTransaction();</span><br><span class="line">                    &#125;</span><br><span class="line">                    mObservedTableTracker.onSyncCompleted();</span><br><span class="line">                &#125; finally &#123;</span><br><span class="line">                    closeLock.unlock();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (IllegalStateException | SQLiteException exception) &#123;</span><br><span class="line">            // may happen if db is closed. just log.</span><br><span class="line">            Log.e(Room.LOG_TAG, &quot;Cannot run invalidation tracker. Is the db closed?&quot;,</span><br><span class="line">                    exception);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法看起来很长，其实是在做一件事.<code>ObservedTableTracker</code>维护了一个需要被观察的表的列表，就是发现有新的表需要被观察就执行<code>startTrackingTable(database, tableId);</code>,有表不需要被观察了就执行<code>stopTrackingTable(database, tableId);</code>。</p>
+<p>继续往下看，看看这两个方法做了什么？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">private void stopTrackingTable(SupportSQLiteDatabase writableDb, int tableId) &#123;</span><br><span class="line">        final String tableName = mShadowTableLookup.get(tableId, mTableNames[tableId]);</span><br><span class="line">        StringBuilder stringBuilder = new StringBuilder();</span><br><span class="line">        for (String trigger : TRIGGERS) &#123;</span><br><span class="line">            stringBuilder.setLength(0);</span><br><span class="line">            stringBuilder.append(&quot;DROP TRIGGER IF EXISTS &quot;);</span><br><span class="line">            appendTriggerName(stringBuilder, tableName, trigger);</span><br><span class="line">            writableDb.execSQL(stringBuilder.toString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void startTrackingTable(SupportSQLiteDatabase writableDb, int tableId) &#123;</span><br><span class="line">        final String tableName = mShadowTableLookup.get(tableId, mTableNames[tableId]);</span><br><span class="line">        StringBuilder stringBuilder = new StringBuilder();</span><br><span class="line">        for (String trigger : TRIGGERS) &#123;</span><br><span class="line">            stringBuilder.setLength(0);</span><br><span class="line">            stringBuilder.append(&quot;CREATE TEMP TRIGGER IF NOT EXISTS &quot;);</span><br><span class="line">            appendTriggerName(stringBuilder, tableName, trigger);</span><br><span class="line">            stringBuilder.append(&quot; AFTER &quot;)</span><br><span class="line">                    .append(trigger)</span><br><span class="line">                    .append(&quot; ON `&quot;)</span><br><span class="line">                    .append(tableName)</span><br><span class="line">                    .append(&quot;` BEGIN INSERT OR REPLACE INTO &quot;)</span><br><span class="line">                    .append(UPDATE_TABLE_NAME)</span><br><span class="line">                    .append(&quot; VALUES(null, &quot;)</span><br><span class="line">                    .append(tableId)</span><br><span class="line">                    .append(&quot;); END&quot;);</span><br><span class="line">            writableDb.execSQL(stringBuilder.toString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>插曲： InvalidationTracker自己维护了一个叫<code>room_table_modification_log</code>的表，有两个字段，一个是<code>version</code>它是自增的，还有一个是table_id，是被观察的表的标识。</p>
+<p>其实就是当需要去观察一个表的时候<code>startTrackingTable ()</code>就在数据库上创建了三个数据库的 <code>Trigger</code> 。关于<code>Trigger</code>是什么这是数据库基础知识，请自备。也就是说，只要在这个表上发生了插入修改或者删除，就会往<code>room_table_modification_log</code>表里面插入一条数据<code>INSERT OR REPLACE INTO room_table_modification_log VALUES(null, table_id)</code>。</p>
+<p>当不需要观察一个表的时候，就通过<code>stopTrackingTable</code>把这三个<code>Trigger</code>删除掉。</p>
+<p>以上就是我们在创建一个Query做的事情。<br>我们先对创建一个Query的流程做一个小的总结：</p>
+<ul>
+<li>通过自动生成的代码创建一个Flowable</li>
+<li>RxRoom会根据这个Flowable创建一个InvalidationTracker.Observer</li>
+<li>InvalidationTracker把这个Observer加到自己的观察列表中</li>
+<li>如果之前没有人观察过这个表，会去创建这个表上修改的Trigger</li>
+</ul>
+<p>到这里，我们似乎应该有一点头绪了，既然每次有数据更新的时候就会往这个表中插入一条数据，那在每一个<code>Trascation</code>结束之后去查这个表就应该可以知道哪些表上的Query可以更新。所以我们回到上面的<code>RoomDatabase</code>中看看<code>endTrasction</code>之后的<code>mInvalidationTracker.refreshVersionsAsync();</code>到底做了什么？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">     * Enqueues a task to refresh the list of updated tables.</span><br><span class="line">     * &lt;p&gt;</span><br><span class="line">     * This method is automatically called when &#123;@link RoomDatabase#endTransaction()&#125; is called but</span><br><span class="line">     * if you have another connection to the database or directly use &#123;@link</span><br><span class="line">     * SupportSQLiteDatabase&#125;, you may need to call this manually.</span><br><span class="line">     */</span><br><span class="line">    @SuppressWarnings(&quot;WeakerAccess&quot;)</span><br><span class="line">    public void refreshVersionsAsync() &#123;</span><br><span class="line">        // TODO we should consider doing this sync instead of async.</span><br><span class="line">        if (mPendingRefresh.compareAndSet(false, true)) &#123;</span><br><span class="line">            mDatabase.getQueryExecutor().execute(mRefreshRunnable);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">     @VisibleForTesting</span><br><span class="line">    Runnable mRefreshRunnable = new Runnable() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void run() &#123;</span><br><span class="line">            final Lock closeLock = mDatabase.getCloseLock();</span><br><span class="line">            boolean hasUpdatedTable = false;</span><br><span class="line">            try &#123;</span><br><span class="line">                closeLock.lock();</span><br><span class="line"></span><br><span class="line">                if (!ensureInitialization()) &#123;</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                if (!mPendingRefresh.compareAndSet(true, false)) &#123;</span><br><span class="line">                    // no pending refresh</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                if (mDatabase.inTransaction()) &#123;</span><br><span class="line">                    // current thread is in a transaction. when it ends, it will invoke</span><br><span class="line">                    // refreshRunnable again. mPendingRefresh is left as false on purpose</span><br><span class="line">                    // so that the last transaction can flip it on again.</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                mCleanupStatement.executeUpdateDelete();</span><br><span class="line">                mQueryArgs[0] = mMaxVersion;</span><br><span class="line">                if (mDatabase.mWriteAheadLoggingEnabled) &#123;</span><br><span class="line">                    // This transaction has to be on the underlying DB rather than the RoomDatabase</span><br><span class="line">                    // in order to avoid a recursive loop after endTransaction.</span><br><span class="line">                    SupportSQLiteDatabase db = mDatabase.getOpenHelper().getWritableDatabase();</span><br><span class="line">                    try &#123;</span><br><span class="line">                        db.beginTransaction();</span><br><span class="line">                        hasUpdatedTable = checkUpdatedTable();</span><br><span class="line">                        db.setTransactionSuccessful();</span><br><span class="line">                    &#125; finally &#123;</span><br><span class="line">                        db.endTransaction();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    hasUpdatedTable = checkUpdatedTable();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; catch (IllegalStateException | SQLiteException exception) &#123;</span><br><span class="line">                // may happen if db is closed. just log.</span><br><span class="line">                Log.e(Room.LOG_TAG, &quot;Cannot run invalidation tracker. Is the db closed?&quot;,</span><br><span class="line">                        exception);</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                closeLock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">            if (hasUpdatedTable) &#123;</span><br><span class="line">                synchronized (mObserverMap) &#123;</span><br><span class="line">                    for (Map.Entry&lt;Observer, ObserverWrapper&gt; entry : mObserverMap) &#123;</span><br><span class="line">                        entry.getValue().notifyByTableVersions(mTableVersions);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        private boolean checkUpdatedTable() &#123;</span><br><span class="line">            boolean hasUpdatedTable = false;</span><br><span class="line">            Cursor cursor = mDatabase.query(SELECT_UPDATED_TABLES_SQL, mQueryArgs);</span><br><span class="line">            //noinspection TryFinallyCanBeTryWithResources</span><br><span class="line">            try &#123;</span><br><span class="line">                while (cursor.moveToNext()) &#123;</span><br><span class="line">                    final long version = cursor.getLong(0);</span><br><span class="line">                    final int tableId = cursor.getInt(1);</span><br><span class="line"></span><br><span class="line">                    mTableVersions[tableId] = version;</span><br><span class="line">                    hasUpdatedTable = true;</span><br><span class="line">                    // result is ordered so we can safely do this assignment</span><br><span class="line">                    mMaxVersion = version;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                cursor.close();</span><br><span class="line">            &#125;</span><br><span class="line">            return hasUpdatedTable;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    static final String SELECT_UPDATED_TABLES_SQL = &quot;SELECT * FROM &quot; + UPDATE_TABLE_NAME</span><br><span class="line">            + &quot; WHERE &quot; + VERSION_COLUMN_NAME</span><br><span class="line">            + &quot;  &gt; ? ORDER BY &quot; + VERSION_COLUMN_NAME + &quot; ASC;&quot;;</span><br></pre></td></tr></table></figure>
+<p>它实际上是执行了<code>mRefreshRunnable</code>的,这个runnerable的逻辑非常清晰，先做一些边界检测，然后去<code>checkUpdatedTable</code>,看有没有用表在变化，怎么检测。看上面的sql语句，就是去查<code>room_table_modification_log</code>中相同的table_id的version，如果有大于之前保存的maxversion的数据，说明有新的修改。然后调用ObserverWrapper 中的<code>notifyByTableVersions</code>去通知表上的观察者。</p>
+<p>这也就回到了上面最后一个问题<code>当一个表发生更改，监听一个查询的实时变化是怎么做到的？</code>。</p>
+<p><strong>MultiInstanceInvalidation</strong></p>
+<p>到这里我们还漏了一点没有讲到。那就是刚才说InvalidationTracker在RoomDatabase中的整个生命周期中的调用情况的时候还有初始化的时候和关闭数据库的时候执行了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mInvalidationTracker.startMultiInstanceInvalidation(configuration.context,configuration.name);</span><br><span class="line">和</span><br><span class="line">mInvalidationTracker.stopMultiInstanceInvalidation();</span><br></pre></td></tr></table></figure>
+<p>因为我们在引用中不可能永远是单标上的查询。也就是说我们一个查询可能是连表的查询，那么这个查询的更新就会依赖于多个表的观察操作。这就引出了框架中的一个经典的CS结构的两个类<code>MultiInstanceInvalidationClient</code>, <code>MultiInstanceInvalidationService</code></p>
+<p>在初始化<code>RoomDatabase</code>的时候我们会开启一个Client也就是<code>startMultiInstanceInvalidation</code>,其实就是创建了有一个Client</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">void startMultiInstanceInvalidation(Context context, String name) &#123;</span><br><span class="line">        mMultiInstanceInvalidationClient = new MultiInstanceInvalidationClient(context, name, this,</span><br><span class="line">                mDatabase.getQueryExecutor());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>看一下Client初始化的过程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">MultiInstanceInvalidationClient(Context context, String name,</span><br><span class="line">            InvalidationTracker invalidationTracker, Executor executor) &#123;</span><br><span class="line">        mContext = context.getApplicationContext();</span><br><span class="line">        mName = name;</span><br><span class="line">        mInvalidationTracker = invalidationTracker;</span><br><span class="line">        mExecutor = executor;</span><br><span class="line">        mObserver = new InvalidationTracker.Observer(invalidationTracker.mTableNames) &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onInvalidated(@NonNull Set&lt;String&gt; tables) &#123;</span><br><span class="line">                if (mStopped.get()) &#123;</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line">                try &#123;</span><br><span class="line">                    mService.broadcastInvalidation(mClientId,</span><br><span class="line">                            tables.toArray(new String[0]));</span><br><span class="line">                &#125; catch (RemoteException e) &#123;</span><br><span class="line">                    Log.w(Room.LOG_TAG, &quot;Cannot broadcast invalidation&quot;, e);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            boolean isRemote() &#123;</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        Intent intent = new Intent(mContext, MultiInstanceInvalidationService.class);</span><br><span class="line">        mContext.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>从上面来看，其实在创建<code>RoomDatabase</code>的时候创建Client的时候，我们就也创建了一个<code>InvalidationTracker.Observer</code>，并且添加进<code>InvalidationTracker</code>的观察列表，当这个表发生更新的时候会通过服务端Service <code>broadcastInvalidation</code>方法去通知客户端Client。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@SuppressWarnings(&quot;WeakerAccess&quot;)</span><br><span class="line">   final Runnable mSetUpRunnable = new Runnable() &#123;</span><br><span class="line">       @Override</span><br><span class="line">       public void run() &#123;</span><br><span class="line">           try &#123;</span><br><span class="line">               final IMultiInstanceInvalidationService service = mService;</span><br><span class="line">               if (service != null) &#123;</span><br><span class="line">                   mClientId = service.registerCallback(mCallback, mName);</span><br><span class="line">                   mInvalidationTracker.addObserver(mObserver);</span><br><span class="line">               &#125;</span><br><span class="line">           &#125; catch (RemoteException e) &#123;</span><br><span class="line">               Log.w(Room.LOG_TAG, &quot;Cannot register multi-instance invalidation callback&quot;, e);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;;</span><br></pre></td></tr></table></figure>
+<p>而每个Client在Setup的时候会去<code>service.registerCallback</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">final IMultiInstanceInvalidationCallback mCallback =</span><br><span class="line">            new IMultiInstanceInvalidationCallback.Stub() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void onInvalidation(final String[] tables) &#123;</span><br><span class="line">                    mExecutor.execute(new Runnable() &#123;</span><br><span class="line">                        @Override</span><br><span class="line">                        public void run() &#123;</span><br><span class="line">                            mInvalidationTracker.notifyObserversByTableNames(tables);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br></pre></td></tr></table></figure>
+<p>这个<code>callback</code>就是是说收到<code>broadcastInvalidation</code>的信息的时候会去执行。</p>
+<p>这个流程就是在多个<code>RoomDatabase</code>之间是如何沟通的，也就是说在其他的<code>RoomDatabase</code>也修改了你这个表，那是如何通知到你发生改变的。</p>
+<p>##小结</p>
+<p>到这里我们在整体上把这个Room是如何做到响应式的做了一个框架的解析。基本上也已经浏览了整个Room的核心代码。当然其中还有很多的细节，如果感兴趣可以自己去好好读一下。因为可能我也不太清楚。我也是初略的读了一下做了一些自己的分析。肯定有理解不对的地方。大家阅读过程中请辩证看待，多多指正。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/16/java-equals-and-hashcode/" rel="next" title="java equals() and hashcode()">
+                <i class="fa fa-chevron-left"></i> java equals() and hashcode()
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="kingty" />
+            
+              <p class="site-author-name" itemprop="name">kingty</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/kingty" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:kingty.teng@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么通过注解就可以操作数据库了？"><span class="nav-number">1.</span> <span class="nav-text">怎么通过注解就可以操作数据库了？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">kingty</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
